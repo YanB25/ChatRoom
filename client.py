@@ -22,7 +22,7 @@ if __name__ == '__main__':
                 if (obj == sys.stdin):
                     readMsg = input()
                     print("get msg{}".format(readMsg))
-                    tcpsock.send(readMsg)
+                    tcpsock.send(readMsg.encode('utf-8')) #TODO
                 else:
                     recvMsg = tcpsock.recv(1024)
                     print(recvMsg)

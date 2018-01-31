@@ -50,7 +50,8 @@ class ChatRoom(object):
         log.log("broadcasting {}".format(msg), log.VERBOSE)
         for sock in self.descriptors:
             if (sock != self.socket):
-                sock.send(msg.encode('utf-8')) #TODO
+                if (type(msg) is str): msg = msg.encode('utf-8')
+                sock.send(msg)
 
 if __name__ == "__main__":
     chatRoom = ChatRoom(12000)
