@@ -27,13 +27,14 @@ if __name__ == '__main__':
     writeFile.write(new_json)
     writeFile.close()
 
-    roomNumber = input('enter room number:')
     print('starting ')
     tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcpsock.connect((server_ip, server_port ))
+    print('connect successfully')
+    roomNumber = input('enter room number:')
 
-    tcpsock.send("room:{}".format(roomNumber))
-    tcpsock.send("username:{}".format(user_name))
+    tcpsock.send("room:{}\n".format(roomNumber).encode('utf-8'))
+    tcpsock.send("username:{}\n".format(user_name).encode('utf-8'))
     while True:
         readList, _, _ = select.select([sys.stdin, tcpsock], [], [], 2)
         if (readList):
@@ -41,16 +42,15 @@ if __name__ == '__main__':
                 if (obj == sys.stdin):
                     readMsg = input()
                     #print("get msg{}".format(readMsg))
-                    tcpsock.send("msg:{}".format(readMsg).encode('utf-8'))
+                    tcpsock.send("msg:{}\n".format(readMsg).encode('utf-8'))
                 else:
                     recvMsg = tcpsock.recv(1024)
                     recvMsg = recvMsg.decode()
-                    try:
-                        t, b = parser.parser(recvMsg)
-                        if (t == 'msg'):
-                            print(recvMsg)
-                    except:
-                        print("unknown msg recieve from server")
+                    print("recvMsg:: {}".format(recvMsg))
+                    msgList = parser.parser(recvMsg)
+                    for msgType, msgBody in msgList:
+                        if (msgType == 'msg'):
+                            print(msgBody)
         else:
             #print ("2s passed")
             pass
