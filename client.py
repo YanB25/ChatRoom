@@ -46,7 +46,7 @@ if __name__ == '__main__':
                 else:
                     recvMsg = tcpsock.recv(1024)
                     recvMsg = recvMsg.decode()
-                    print("recvMsg:: {}".format(recvMsg))
+                    #print("recvMsg:: {}".format(recvMsg))
                     msgList = parser.parser(recvMsg)
                     for msgType, msgBody in msgList:
                         if (msgType == 'msg'):
