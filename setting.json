@@ -3,10 +3,13 @@
     {
         "logLevel": "VERBOSE",
         "port": "12000",
-        "ip": "172.0.0.1"
+        "ip": "127.0.0.1"
     },
     "client":
     {
-        "username": "unknown"
+        "username": "yanbin",
+        "port": "12000",
+        "ip": "127.0.0.1"
+
     }
 }

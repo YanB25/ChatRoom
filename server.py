@@ -38,7 +38,7 @@ class ChatRoom(object):
                             bs = "{}:{} disconnect".format(str(host), str(port))
                             self.broadcase_message(bs)
                             sock.close()
-                            self.descriptors.remove(socket)
+                            self.descriptors.remove(sock)
     
     def add_new_connection(self):
         connectionSocket, addr = self.socket.accept()
@@ -50,7 +50,7 @@ class ChatRoom(object):
         log.log("broadcasting {}".format(msg), log.VERBOSE)
         for sock in self.descriptors:
             if (sock != self.socket):
-                sock.send(msg)
+                sock.send(msg.encode('utf-8')) #TODO
 
 if __name__ == "__main__":
     chatRoom = ChatRoom(12000)
