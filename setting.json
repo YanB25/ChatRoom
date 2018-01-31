@@ -1,15 +1,12 @@
 {
-    "server": 
-    {
-        "logLevel": "VERBOSE",
+    "client": {
         "port": "12000",
-        "ip": "127.0.0.1"
+        "ip": "127.0.0.1",
+        "username": "yanbin"
     },
-    "client":
-    {
-        "username": "yanbin",
+    "server": {
         "port": "12000",
-        "ip": "127.0.0.1"
-
+        "ip": "172.0.0.1",
+        "logLevel": "VERBOSE"
     }
 }

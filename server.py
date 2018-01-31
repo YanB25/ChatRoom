@@ -2,6 +2,7 @@ import sys
 import select
 import socket
 import log
+import parser
 
 class ChatRoom(object):
     '''
@@ -16,6 +17,9 @@ class ChatRoom(object):
         self.socket.bind(('', self.port))
         self.socket.listen(10)
         self.descriptors = [self.socket]
+        self.ipToName = {}
+        self.roomToSocks = {}
+        self.ipToRoom = {}
         log.log("init socket in port " + str(port), log.VERBOSE)
     
     def run(self):
@@ -29,27 +33,49 @@ class ChatRoom(object):
                         self.add_new_connection()
                     else:
                         msg = sock.recv(1024)
-                        host, port = sock.getpeername()
                         if (msg):
-                            # broadcast
-                            self.broadcase_message(msg)
+                            host, port = sock.getpeername()
+                            msgType, msgBody = parser.parser(msg)
+                            if msgType == 'username':
+                                self.ipToName[host] = msgBody
+                                log.log("ip {} as username {}".format(host, msgBody), log.VERBOSE)
+                                room = self.ipToRoom[host]
+                                bs = "user {} enter room {}".format(msgBody, room)
+                                self.broadcase_message(room, bs)
+                            elif msgType == 'room':
+                                self.ipToRoom[host] = msgBody
+                                r = self.roomToSocks.get(msgBody)
+                                if (r == None):
+                                    self.roomToSocks[msgBody] = [sock]
+                                else:
+                                    self.roomToSocks[msgBody].append = sock
+                                log.log("enter room{}".format(msgBody),log.VERBOSE)
+                            elif msgType == 'msg':
+                                # broadcast
+                                room = self.ipToRoom[host]
+                                self.broadcase_message(room, msg, sock)
+                            else:
+                                log.log("unknown syntax recieved:{}".format(msg), log.WARNING)
                         else:
                             # disconnect
                             bs = "{}:{} disconnect".format(str(host), str(port))
-                            self.broadcase_message(bs)
+                            room = self.ipToRoom[host]
+                            self.broadcase_message(room, bs)
                             sock.close()
                             self.descriptors.remove(sock)
+                            del self.ipToRoom[host]
+                            del self.ipToName[host]
+                            del self.roomToSocks[room]
     
     def add_new_connection(self):
         connectionSocket, addr = self.socket.accept()
         self.descriptors.append(connectionSocket)
         bs = "{} join the chat room".format(str(addr))
-        self.broadcase_message(bs)
         
-    def broadcase_message(self, msg):
+    def broadcase_message(self, room, msg, ignore = None):
         log.log("broadcasting {}".format(msg), log.VERBOSE)
-        for sock in self.descriptors:
-            if (sock != self.socket):
+        for sock in self.roomToSocks[room]:
+            if (sock != self.socket and sock != ignore):
                 if (type(msg) is str): msg = msg.encode('utf-8')
                 sock.send(msg)
 
