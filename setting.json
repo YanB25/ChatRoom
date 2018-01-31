@@ -1,5 +1,12 @@
 {
-    "logLevel": "VERBOSE",
-    "port": "12000",
-    "ip": "172.0.0.1"
+    "server": 
+    {
+        "logLevel": "VERBOSE",
+        "port": "12000",
+        "ip": "172.0.0.1"
+    },
+    "client":
+    {
+        "username": "unknown"
+    }
 }

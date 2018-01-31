@@ -10,7 +10,7 @@ def log(msg, level):
     if level == -1:
         setting_json = open('setting.json', 'r').read()
         json_data = json.loads(setting_json)
-        log_level_msg = json_data['logLevel']
+        log_level_msg = json_data['server']['logLevel']
         if log_level_msg == "VERBOSE":
             log.level = VERBOSE
         elif log_level_msg == "WARNING":
