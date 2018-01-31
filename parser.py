@@ -1,6 +1,6 @@
 import log
 def parser(msgs):
-    log.log(msgs, log.VERBOSE)
+    #log.log(msgs, log.VERBOSE)
     if not type(msgs) is str: 
         msgs = msgs.decode()
     msgs = msgs.split("\n")
